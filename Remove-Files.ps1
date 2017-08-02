@@ -1,8 +1,8 @@
 ﻿# Script to remove files and folders older than x number of days
 #
 # Name: Remove-Files.ps1
-# Version: 1.0
-# Date: 17/07/2017
+# Version: 1.1
+# Date: 02/08/2017
 #
 # Script Arguments:
 #
@@ -43,7 +43,7 @@ Function RemoveFiles ($Days, $Path, $Filter, $Recurse, $Log) {
     $dateLimit = (Get-Date).AddDays(-$Days); # Set the number of days to delete files and folders by
     $count = 0
 
-    Write-Verbose $dateLimit
+    Write-Verbose "Date limit: $dateLimit"
 
     if ($Recurse) {
         $listFiles = Get-ChildItem -LiteralPath $Path -Filter $Filter -Recurse -File -Force| Where-Object CreationTime -lt $dateLimit
@@ -58,16 +58,13 @@ Function RemoveFiles ($Days, $Path, $Filter, $Recurse, $Log) {
         $Created = ($file.CreationTime).ToString()
         $Name = $file.FullName
         
-        Write-Verbose $Created
-        Write-Verbose $Name
+        Write-Verbose "$Name Created: $Created"
 
-        if (!$WhatIf) {
-            $file | Remove-Item -Force
-        }
+        $file | Remove-Item -Force -WhatIf:$WhatIfPreference
 
         if ($LogPath) {
             $LogEntry = $Created+" "+$Name
-            if ($WhatIf) {
+            if ($WhatIfPreference -eq $true) {
                 $LogEntry = "***-WhatIf Parameter Used, File NOT Deleted*** "+$LogEntry
             }
             $LogEntry | Out-File -FilePath $Log -Append -Force
@@ -79,11 +76,11 @@ Function RemoveFiles ($Days, $Path, $Filter, $Recurse, $Log) {
 # This Function Removes Empty Folders Only
 Function RemoveDirs ($Days, $Path, $Filter, $Log) {
 
-    Write-Verbose $Path
+    Write-Verbose "Path: $Path"
 
     $dateLimit = (Get-Date).AddDays(-$Days);
 
-    Write-Verbose $dateLimit
+    Write-Verbose "Date limit: $dateLimit"
    
     $listDirs = Get-ChildItem -LiteralPath $Path -Filter $Filter -Directory -Force | Where-Object CreationTime -lt $dateLimit
 
@@ -98,16 +95,13 @@ Function RemoveDirs ($Days, $Path, $Filter, $Log) {
         $Created = (Get-Item -LiteralPath $Path -Force).CreationTime
         $Created = ($Created).ToString()
 
-        Write-Verbose $Created
-        Write-Verbose $Path
+        Write-Verbose "$Path Created: $Created"
             
-        if (!$WhatIf) {
-            Remove-Item -LiteralPath $Path -Force
-        }
+        Remove-Item -LiteralPath $Path -Force -WhatIf:$WhatIfPreference
 
         if ($LogPath) {
             $LogEntry = $Created+" "+$Path
-            if ($WhatIf) {
+            if ($WhatIfPreference -eq $true) {
                 $LogEntry = "***-WhatIf Parameter Used, File NOT Deleted*** "+$LogEntry
             }
             $LogEntry | Out-File -FilePath $Log -Append -Force                
@@ -120,6 +114,11 @@ Function RemoveDirs ($Days, $Path, $Filter, $Log) {
 # Set some variables
 $Verbose = $VerbosePreference -ne "SilentlyContinue" # Detect if the script was called with Verbose output
 $curDate = Get-Date -Format dd-MM-yy_HHmm # Get the current date in specific format (to set the log file name)
+
+if ($WhatIf) {
+    $WhatIfPreference = $true
+}
+
 if ($LogPath) { # If the LogPath Command Line switch is set, then we want a log file
     $LogFile = $LogPath+"FileCleanup_"+$curDate+".log"
 }
@@ -146,11 +145,11 @@ if ($Dirs) {
 }
 
 # Write out set variables when script is called with Verbose output
-Write-Verbose $Days
-Write-Verbose $Path
-Write-Verbose $Filter
-Write-Verbose $LogPath
-Write-Verbose $curDate
-Write-Verbose $logFile
-Write-Verbose $Verbose
-Write-Verbose $WhatIf
+Write-Verbose "Days: $Days"
+Write-Verbose "Path: $Path"
+Write-Verbose "Filter: $Filter"
+Write-Verbose "Log Path: $LogPath"
+Write-Verbose "Current Date: $curDate"
+Write-Verbose "Log File: $logFile"
+Write-Verbose "Verbose: $Verbose"
+Write-Verbose "WhatIfPreference: $WhatIfPreference"
