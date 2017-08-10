@@ -1,8 +1,8 @@
 ﻿# Script to remove files and folders older than x number of days
 #
 # Name: Remove-Files.ps1
-# Version: 1.1
-# Date: 02/08/2017
+# Version: 1.1.1
+# Date: 10/08/2017
 #
 # Script Arguments:
 #
@@ -25,7 +25,9 @@
 
 param(
 
+[parameter(mandatory=$true)]
 [int]$Days,
+[parameter(mandatory=$true)]
 [string]$Path,
 [string]$LogPath,
 [string]$Filter,

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.1 - 10/08/2017
+### Changed
+- Actually made mandatory parameters mandatory
+
 ## 1.1.0 - 02/08/2017
 ### Changed
 - Updated "-WhatIf" usage and set $WhatIfPreference

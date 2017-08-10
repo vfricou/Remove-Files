@@ -4,8 +4,8 @@ Powershell - Remove Files and/or Folders recursivly older than x number of days
 Script to remove files and folders older than x number of days, useful in a scheduled task
 
 Name: Remove-Files.ps1
-Version: 1.1
-Date: 02/08/2017
+Version: 1.1.1
+Date: 10/08/2017
 
 Script Arguments:
 
