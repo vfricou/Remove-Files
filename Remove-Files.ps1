@@ -62,7 +62,7 @@ Function RemoveFiles ($Days, $Path, $Filter, $Recurse, $Log) {
         
         Write-Verbose "$Name Created: $Created"
 
-        $file | Remove-Item -Force -WhatIf:$WhatIfPreference
+        "$file" | Remove-Item -Force -WhatIf:$WhatIfPreference
 
         if ($LogPath) {
             $LogEntry = $Created+" "+$Name
@@ -99,7 +99,7 @@ Function RemoveDirs ($Days, $Path, $Filter, $Log) {
 
         Write-Verbose "$Path Created: $Created"
             
-        Remove-Item -LiteralPath $Path -Force -WhatIf:$WhatIfPreference
+        Remove-Item -LiteralPath "$Path" -Force -WhatIf:$WhatIfPreference
 
         if ($LogPath) {
             $LogEntry = $Created+" "+$Path
